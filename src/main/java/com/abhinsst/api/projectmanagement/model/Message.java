@@ -1,35 +1,27 @@
 package com.abhinsst.api.projectmanagement.model;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import jakarta.persistence.Entity;
+import jakarta.annotation.Generated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.OneToOne;
 
-@Data
-@Entity
-@AllArgsConstructor
-@NoArgsConstructor
-public class Comments {
+public class Message {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
   private String content;
-
-  private LocalDateTime createdDateTime;
-
-  @ManyToOne
-  private User user;
+  private LocalDateTime createdAt;
 
   @ManyToOne
-  private Issue issue;
+  private Chat chat;
+
+  @ManyToOne
+  private User sender;
 
 }
