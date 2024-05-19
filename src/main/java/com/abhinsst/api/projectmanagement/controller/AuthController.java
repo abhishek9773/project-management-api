@@ -16,11 +16,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.abhinsst.api.projectmanagement.config.JwtProvider;
+import com.abhinsst.api.projectmanagement.model.Subscription;
 import com.abhinsst.api.projectmanagement.model.User;
 import com.abhinsst.api.projectmanagement.repository.UserRepository;
 import com.abhinsst.api.projectmanagement.request.LoginRequest;
 import com.abhinsst.api.projectmanagement.response.AuthResponse;
 import com.abhinsst.api.projectmanagement.service.CustomeUserDetailsImpl;
+import com.abhinsst.api.projectmanagement.service.SubscriptionService;
+
 import java.lang.Exception;
 
 @RestController
@@ -34,7 +37,10 @@ public class AuthController {
   private PasswordEncoder passwordEncoder;
 
   @Autowired
-  private CustomeUserDetailsImpl customeUserDetailsImpl;
+  private CustomeUserDetailsImpl customeUserDetails;
+
+  @Autowired
+  private SubscriptionService subscriptionSerivService;
 
   @PostMapping("/signup")
   public ResponseEntity<AuthResponse> createUserHandler(@RequestBody User user) throws Exception {
@@ -50,6 +56,7 @@ public class AuthController {
     createdUser.setFullName(user.getFullName());
 
     User saveUser = userRepository.save(createdUser);
+    subscriptionSerivService.createSubscription(saveUser);
 
     Authentication authentication = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
     SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -84,11 +91,11 @@ public class AuthController {
   }
 
   private Authentication authenticated(String username, String password) {
-    UserDetails userDetails = customUserDetails.loadUserByUsername(username);
+    UserDetails userDetails = customeUserDetails.loadUserByUsername(username);
     if (userDetails == null) {
       throw new BadCredentialsException("invalid username or password");
     }
-    if(!passwordEncoder.matches((password.userDetails.getPassword())){
+    if (!passwordEncoder.matches(password.userDetails.getPassword())) {
       throw new BadCredentialsException("Invalid password");
     }
     return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
