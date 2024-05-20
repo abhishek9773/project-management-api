@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -16,7 +18,7 @@ import lombok.Data;
 @Entity
 @Data
 public class User {
-  /**3 ** */
+  /** 3 ** */
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,6 +26,7 @@ public class User {
 
   private String fullName;
   private String email;
+  @JsonProperty(access = Access.WRITE_ONLY)
   private String password;
 
   @JsonIgnore

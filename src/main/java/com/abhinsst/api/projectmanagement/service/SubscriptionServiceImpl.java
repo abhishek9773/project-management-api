@@ -34,7 +34,14 @@ public class SubscriptionServiceImpl implements SubscriptionService {
   @Override
   public Subscription getUserSubscription(Long userId) throws Exception {
 
-    return subscriptionRepository.findByUserId(userId);
+    Subscription subscription = subscriptionRepository.findByUserId(userId);
+    if (!isValid(subscription)) {
+      subscription.setPlaneType(PlanType.FREE);
+      subscription.setGetSubscriptionEndDate(LocalDate.now().plusMonths(12));
+      subscription.setSubscriptionStartDate(LocalDate.now());
+    }
+
+    return subscriptionRepository.save(subscription);
   }
 
   @Override
@@ -54,7 +61,12 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
   @Override
   public boolean isValid(Subscription subscription) {
-    return;
+    if (subscription.getPlaneType().equals(PlanType.FREE)) {
+      return true;
+    }
+    LocalDate endDate = subscription.getGetSubscriptionEndDate();
+    LocalDate currenDate = LocalDate.now();
+    return endDate.isAfter(currenDate) || endDate.isEqual(currenDate);
   }
 
 }
